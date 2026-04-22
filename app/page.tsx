@@ -20,6 +20,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [loggingIn, setLoggingIn] = useState(false);
   const [errorText, setErrorText] = useState("");
+  const [view, setView] = useState<"live" | "sales" | "stocks">("live");
 
   useEffect(() => {
     checkSession();
@@ -75,7 +76,7 @@ export default function Home() {
   } finally {
     setLoggingIn(false);
   }
-}
+}      
 
   async function handleLogout() {
     await supabase.auth.signOut();
@@ -230,60 +231,128 @@ export default function Home() {
       }}
     >
       <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: 16,
-          gap: 12,
-        }}
-      >
-        <h2 style={{ margin: 0 }}>📊 Live Orders Dashboard</h2>
+  style={{
+    display: "flex",
+    flexDirection: "column",
+    gap: 12,
+    marginBottom: 16,
+  }}
+>
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      gap: 12,
+    }}
+  >
+    <h2 style={{ margin: 0, fontSize: 20 }}>📊 Miss G Dashboard</h2>
 
-        <button
-          onClick={handleLogout}
-          style={{
-            padding: "8px 12px",
-            borderRadius: 8,
-            border: "none",
-            background: "#2a2a2a",
-            color: "white",
-            cursor: "pointer",
-          }}
-        >
-          Logout
-        </button>
-      </div>
+    <button
+      onClick={handleLogout}
+      style={{
+        padding: "8px 12px",
+        borderRadius: 8,
+        border: "none",
+        background: "#2a2a2a",
+        color: "white",
+        cursor: "pointer",
+      }}
+    >
+      Logout
+    </button>
+  </div>
 
-      {orders.length === 0 ? (
-        <p>No orders yet.</p>
-      ) : (
-        orders.map((o) => (
-          <div
-            key={o.id}
-            style={{
-              background: "#1e1e1e",
-              padding: 12,
-              marginBottom: 8,
-              borderRadius: 8,
-            }}
-          >
-            <div style={{ fontWeight: "bold", marginBottom: 4 }}>
-              @{o.username}
-            </div>
-            <div style={{ marginBottom: 4 }}>Code: {o.code}</div>
-            <div style={{ marginBottom: 4 }}>
-              ₱{o.price} x {o.qty}
-            </div>
-            <div style={{ fontSize: 12, color: "#999" }}>
-              {new Date(o.created_at).toLocaleDateString()}{" "}
-              {new Date(o.created_at).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </div>
-          </div>
-        ))
+  <div
+    style={{
+      display: "flex",
+      gap: 8,
+      overflowX: "auto",
+    }}
+  >
+    <button
+      onClick={() => setView("live")}
+      style={{
+        padding: "10px 14px",
+        borderRadius: 999,
+        border: "none",
+        background: view === "live" ? "#d61f45" : "#232323",
+        color: "white",
+        fontWeight: "bold",
+        cursor: "pointer",
+        whiteSpace: "nowrap",
+      }}
+    >
+      Live
+    </button>
+
+    <button
+      onClick={() => setView("sales")}
+      style={{
+        padding: "10px 14px",
+        borderRadius: 999,
+        border: "none",
+        background: view === "sales" ? "#d61f45" : "#232323",
+        color: "white",
+        fontWeight: "bold",
+        cursor: "pointer",
+        whiteSpace: "nowrap",
+      }}
+    >
+      Sales Log
+    </button>
+
+    <button
+      onClick={() => setView("stocks")}
+      style={{
+        padding: "10px 14px",
+        borderRadius: 999,
+        border: "none",
+        background: view === "stocks" ? "#d61f45" : "#232323",
+        color: "white",
+        fontWeight: "bold",
+        cursor: "pointer",
+        whiteSpace: "nowrap",
+      }}
+    >
+      Stocks
+    </button>
+  </div>
+</div>
+
+      {view === "live" && (
+        <div>
+          {orders.length === 0 ? (
+            <p>No orders yet.</p>
+          ) : (
+            orders.map((o) => (
+              <div
+                key={o.id}
+                style={{
+                  background: "#1e1e1e",
+                  padding: 12,
+                  marginBottom: 8,
+                  borderRadius: 8,
+                }}
+              >
+                <div style={{ fontWeight: "bold", marginBottom: 4 }}>
+                  @{o.username}
+                </div>
+                <div style={{ marginBottom: 4 }}>Code: {o.code}</div>
+                <div style={{ marginBottom: 4 }}>
+                  ₱{o.price} x {o.qty}
+                </div>
+                <div style={{ fontSize: 12, color: "#999" }}>
+                  {new Date(o.created_at).toLocaleDateString()}{" "}
+                  {new Date(o.created_at).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       )}
     </div>
   );
